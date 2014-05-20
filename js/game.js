@@ -5,7 +5,7 @@ var canvas_background;
 var context_background;
 var background_data;
 
-var img_data;
+var background_img_data;
 
 var unitImg;
 var mapImg;
@@ -56,7 +56,7 @@ function load_images() {
         context.drawImage(mapImg, 0, 0);
         context_background.drawImage(mapImg, 0, 0);
         background_data = context_background.getImageData(0, 0, canvas_background.width, canvas_background.height);
-        img_data = background_data.data;
+        background_img_data = background_data.data;
         // drawImage(mapImg, 0, 0);
         // mapData = context.getImageData(0, 0, canvas.width, canvas.height);
         // get_unit_ghost();
@@ -74,11 +74,29 @@ function draw_unit(posX, posY, color) {
     context.drawImage(unitImg, posX, posY, unitSizeW, unitSizeH);
 }
 
-function can_move_to(x, y) {
+function can_move_to(X, Y) {
     // check available move as size of maze
-    if (x >=0 && (x <= canvas.width - unitSizeW) && y >=0 && (y <= canvas.height - unitSizeH) ) {
+    if (X >=0 && (X <= canvas.width - unitSizeW) && Y >=0 && (Y <= canvas.height - unitSizeH) ) {
         // check available move as image color
-        var start = get_unit_pos(x, y);
+//        var start = get_unit_pos(x, y);
+        for (var y = Y; y <= Y + unitSizeH - unitStep; y++ ){
+            for (var x = X; x <= X + unitSizeW; x++ ){
+                var pixel = (canvas_background.width * y + x) * 4;
+                var red = background_img_data[pixel];
+                var green = background_img_data[pixel + 1];
+                var blue = background_img_data[pixel + 2];
+                // var alpha = background_img_data[pixel + 3];
+                // console.log(red, green, blue, alpha);
+                if (red === 0 && green === 0 && blue === 0) {
+                    // console.log('no');
+                    return false;
+                } else if (red ===0 && green === 255 && blue === 0) {
+                    game_is_won();
+                    return false;
+                    //console.log(red, green, blue);
+                }
+            }
+        }
         // for(var i = start; i <= start + 4; i += 4) {
         //     var red = img_data[i];
         //     var green = img_data[i + 1];
@@ -156,6 +174,11 @@ function start_game() {
     
     load_images();
     window.addEventListener("keydown", move_unit, true);
+}
+
+function game_is_won() {
+    alert("Вы победили!");
+    window.removeEventListener("keydown", move_unit, true);
 }
 
 $( document ).ready(function() {
