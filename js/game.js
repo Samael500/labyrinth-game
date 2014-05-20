@@ -14,19 +14,23 @@ var mapData;
 
 var unitGhost;
 
-var currUnitX = 0;
-var currUnitY = 0;
+var currUnitX = 10;
+var currUnitY = 10;
 var unitStep = 10;
-var unitSize = 50;
+var unitSizeW = 30;
+var unitSizeH = 40;
 
 var unitSrc = "img/mario.png";
-var mapSrc = "img/map.jpg";
+var mapSrc = "img/map2.png";
 
 var background_color = "lightgrey";
 
 function make_white(x, y, w, h, style) {
     // context.drawImage(mapImg, 0, 0);
-    context.putImageData(background_data, 0, 0);
+    // var back_data = context_background.getImageData(x, y, w, h);
+    // context.putImageData(back_data, x, y);
+    context.drawImage(mapImg, 0, 0);
+    // context.putImageData(background_data, 0, 0);
 
     // context.beginPath();
     // context.rect(x, y, w, h);
@@ -36,8 +40,8 @@ function make_white(x, y, w, h, style) {
 }
 
 function get_unit_pos(X, Y){
-    var x = X + unitSize / 2;
-    var y = Y + unitSize - unitStep - unitSize / 10;
+    var x = X + unitSizeW / 2;
+    var y = Y + unitSizeH - unitStep;
     return (canvas_background.width * y + x) * 4;
 }
 
@@ -46,7 +50,7 @@ function load_images() {
     mapImg = new Image();
 
     unitImg.onload = function () {
-        context.drawImage(unitImg, currUnitX, currUnitY, unitSize, unitSize);
+        context.drawImage(unitImg, currUnitX, currUnitY, unitSizeW, unitSizeH);
     };
     mapImg.onload = function () {
         context.drawImage(mapImg, 0, 0);
@@ -66,26 +70,26 @@ function load_images() {
 }
 
 function draw_unit(posX, posY, color) {
-    make_white(currUnitX, currUnitY, unitSize, unitSize, background_color);
-    context.drawImage(unitImg, posX, posY, unitSize, unitSize);
+    make_white(currUnitX, currUnitY, unitSizeW, unitSizeH, background_color);
+    context.drawImage(unitImg, posX, posY, unitSizeW, unitSizeH);
 }
 
 function can_move_to(x, y) {
     // check available move as size of maze
-    if (x >=0 && (x <= canvas.width - unitSize) && y >=0 && (y <= canvas.height - unitSize) ) {
+    if (x >=0 && (x <= canvas.width - unitSizeW) && y >=0 && (y <= canvas.height - unitSizeH) ) {
         // check available move as image color
         var start = get_unit_pos(x, y);
-        for(var i = start; i <= start + 4; i += 4) {
-            var red = img_data[i];
-            var green = img_data[i + 1];
-            var blue = img_data[i + 2];
-            var alpha = img_data[i + 3];
-            // console.log(red, green, blue, alpha);
-            if (red !== 255 && green !== 255 && blue !== 255) {
-                // console.log('no');
-                return false;
-            }
-        }
+        // for(var i = start; i <= start + 4; i += 4) {
+        //     var red = img_data[i];
+        //     var green = img_data[i + 1];
+        //     var blue = img_data[i + 2];
+        //     var alpha = img_data[i + 3];
+        //     // console.log(red, green, blue, alpha);
+        //     if (red !== 255 && green !== 255 && blue !== 255) {
+        //         // console.log('no');
+        //         return false;
+        //     }
+        // }
 
         // console.log('ok');
         return true;
